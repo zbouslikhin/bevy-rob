@@ -2,6 +2,7 @@
   "name": "simple-cdn",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@web-std/stream": "^1.0.3",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "jsdom": "^24.1.1",
     "morgan": "^1.10.0",
     "ws": "^8.18.0"
   }

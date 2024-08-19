@@ -1,29 +1,44 @@
-// Import the WebSocket module
-const WebSocket = require('ws');
+import { JSDOM } from 'jsdom';
+import { ReadableStream } from '@web-std/stream';
 
-// Connect to the WebSocket server
-const ws = new WebSocket('ws://127.0.0.1:8080');
+// Create a DOM environment to simulate a browser
+const { window } = new JSDOM('', { url: 'http://localhost/' });
 
-// Handle connection open event
-ws.on('open', function open() {
-  console.log('Connected to the WebSocket server');
+// Mock global objects that WebAssembly might expect
+global.window = window;
+global.document = window.document;
+global.ReadableStream = ReadableStream;
 
-  // Send a message to the WebSocket server
-  ws.send('Hello, Server!');
-});
+// Dynamically import the wasm-bindgen module
+async function main() {
+  // Import the WebAssembly module
+  const wasm = await import('../my_bevy_game/out/my_bevy_game.js');
 
-// Handle incoming messages
-ws.on('message', function incoming(data) {
-  console.log('Received from server: %s', data);
-});
+  // Create a ReadableStream (e.g., emit numbers like in the browser example)
+  const stream = new ReadableStream({
+    start(controller) {
+      let count = 0;
+      const interval = setInterval(() => {
+        console.log(`Pushing to stream: ${count} ${JSON.stringify({ "zaid": 1 })`);
+        controller.enqueue(count++);
 
-// Handle connection close event
-ws.on('close', function close() {
-  console.log('Disconnected from the WebSocket server');
-});
+        if (count > 5) {
+          clearInterval(interval);
+          controller.close();
+        }
+      }, 1000);  // Emit one value per second
+    }
+  });
 
-// Handle errors
-ws.on('error', function error(err) {
-  console.error('WebSocket error:', err);
+  // Create the StreamProcessor from the WebAssembly module
+  const processor = new wasm.StreamProcessor(stream);
+
+  // Process the stream in WebAssembly
+  console.log("Processing stream in WebAssembly...");
+  await processor.process_stream();
+}
+
+main().catch(err => {
+  console.error("Error occurred:", err);
 });
 

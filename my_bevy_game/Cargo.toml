@@ -12,14 +12,12 @@ bevy_stl = "0.14.0"
 bevy_web_asset = "0.9.0"
 rand = "0.8.5"
 rand_chacha = "0.3.1"
-wasm-bindgen = "0.2.92"
+wasm-bindgen = "0.2.93"
 
-crossbeam-channel = "0.5.8"
-async-channel = "2.1.0"
-async-tungstenite = "0.23.0"
-async-net = "2.0.0"
 futures = "0.3.29"
-
+web-sys = { version = "0.3.70", features = ["WebSocket", "ReadableStream", "ReadableStreamDefaultReader", "console"] }
+wasm-bindgen-futures = "0.4.43"
+js-sys = "0.3.70"
 
 
 [target.wasm32-unknown-unknown]

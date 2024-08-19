@@ -1,49 +1,58 @@
-import init, { Runner } from '../../my_bevy_game/out/my_bevy_game.js'
-import { useEffect, useRef, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import { ReadableStream } from '@web-std/stream';
+import init, { StreamProcessor } from '../../my_bevy_game/out/my_bevy_game.js'; // Ensure this path is correct
+import reactLogo from './assets/react.svg';
+import viteLogo from '/vite.svg';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const ref = useRef()
+  const [count, setCount] = useState(0);
+  const [streamProcessor, setStreamProcessor] = useState(null); // State to store the StreamProcessor
 
   useEffect(() => {
+    // Initialize WebAssembly module and setup stream
+
     init().then(() => {
-      console.log("Run")
-      ref.current = new Runner();
-      // start()
-    }).catch((err) => {
-      console.log(`an error occured ${err}`)
-      // ref.current = new Runner();
-      console.error(err)
-    })
-  }, [])
 
-  const handleSendMessage = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/send-message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: message,
-          port: 12345, // Replace with the target port
-          address: '127.0.0.1', // Replace with the target address
-        }),
-      });
+    });
+  }, []);
 
-      const result = await res.text();
-      setResponse(result);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setResponse('Error sending message');
-    }
-  };
+
 
   const setParam = () => {
-    handleSendMessage()
+
+    try {
+
+      // Create a ReadableStream
+      const stream = new ReadableStream({
+        start(controller) {
+          let count = 0;
+          const interval = setInterval(() => {
+            console.log(`Pushing to stream: ${count}`);
+            controller.enqueue(count++);
+            controller.enqueue(
+              JSON.stringify({ zaid: 1 }))
+
+            if (count > 5) {
+              clearInterval(interval);
+              controller.close();
+            }
+          }, 1000); // Emit one value per second
+        }
+      });
+
+      // Create the StreamProcessor from the WebAssembly module
+      const processor = new StreamProcessor(stream);
+      setStreamProcessor(processor);
+
+      console.log("Processing stream in WebAssembly...");
+      processor.process_stream().then(() => {
+
+      });
+
+    } catch (err) {
+      console.error('Error initializing WASM module or processing stream:', err);
+    }
   }
 
   return (
