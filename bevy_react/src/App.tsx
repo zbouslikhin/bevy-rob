@@ -26,20 +26,14 @@ function App() {
       // Create a ReadableStream
       const stream = new ReadableStream({
         start(controller) {
-          let count = 0;
-          const interval = setInterval(() => {
-            console.log(`Pushing to stream: ${count}`);
-            controller.enqueue(count++);
-            controller.enqueue(
-              JSON.stringify({ zaid: 1 }))
-
-            if (count > 5) {
-              clearInterval(interval);
-              controller.close();
-            }
-          }, 1000); // Emit one value per second
+          console.log(`Pushing to stream: ${count}`);
+          controller.enqueue(
+            JSON.stringify({ zaid: count, Hi: [1, 2, 3] })
+          )
+          controller.close();
         }
       });
+      setCount((count) => count + 1)
 
       // Create the StreamProcessor from the WebAssembly module
       const processor = new StreamProcessor(stream);

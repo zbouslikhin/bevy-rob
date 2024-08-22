@@ -1,24 +1,14 @@
 [package]
 name = "my_bevy_game"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+license.workspace = true
 
-
-[dependencies]
-bevy =  { version = "0.14.1", features = ["multi_threaded"] }
-bevy_panorbit_camera = "0.19.1"
-bevy_rapier3d = "*"
-bevy_stl = "0.14.0"
-bevy_web_asset = "0.9.0"
-rand = "0.8.5"
-rand_chacha = "0.3.1"
-wasm-bindgen = "0.2.93"
-
-futures = "0.3.29"
-web-sys = { version = "0.3.70", features = ["WebSocket", "ReadableStream", "ReadableStreamDefaultReader", "console"] }
-wasm-bindgen-futures = "0.4.43"
-js-sys = "0.3.70"
-
+[[bin]]
+name = "my_bevy_game"
+path = "src/main.rs"
 
 [target.wasm32-unknown-unknown]
 runner = "wasm-server-runner"
@@ -32,5 +22,34 @@ opt-level = 0 # Switch to 1 for more runtime performance
 [profile.dev.package."*"]
 opt-level = 2
 
-[features]
+[workspace]
+members = ["crates/*"]
+
+[workspace.dependencies]
+rob_network = { path = "crates/network" }
+rob_spawner = { path ="crates/robots" }
+rob_camera = { path ="crates/camera" }
+rob_lightning = { path = "crates/lightning" }
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Zaid Bouslikhin<z.bouslikhin@gmail.com>"]
+keywords = ["bevy", "3d"]
+license = "AGPL-3.0"
+
+[workspace.dependencies.bevy]  
+version = "0.14.1"
+
+[workspace.dependencies.features]
 dev = ["bevy/dynamic_linking", "bevy/file_watcher", "bevy/asset_processor"]
+
+[dependencies]
+rob_network.workspace = true
+rob_camera.workspace = true
+rob_spawner.workspace = true
+rob_lightning.workspace = true
+bevy.workspace = true
+bevy_stl = "0.14.0"
+bevy_web_asset = "0.9.0"
+wasm-bindgen = "0.2.93"

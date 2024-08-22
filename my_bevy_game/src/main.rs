@@ -1,54 +1,43 @@
-mod core;
 mod plugins;
-mod robots;
 
 use bevy::app::App;
+use bevy::ecs::system::ResMut;
 use bevy::prelude::*;
-use core::camera::CameraPlugin;
-use core::networking::NetworkingPlugin;
+
+use rob_camera::CameraPlugin;
+use rob_lightning::lightning::LightningPlugin;
+use rob_network::readable_stream::NetworkingPlugin;
+use rob_spawner::robots::RobotPlugin;
+
 // use plugins::list_object::ObjectListPlugin;
 use plugins::web_asset::WrappedWebAssetPlugin;
-use robots::RobotPlugin;
 use wasm_bindgen::prelude::*;
 
-#[derive(Resource)]
-struct MyResource {
-    value: i32,
-}
+fn define_app() -> App {
+    let mut app = App::new();
 
-fn define_app() {
-    App::new()
-        .insert_resource(MyResource { value: 0 })
-        .add_plugins(WrappedWebAssetPlugin)
+    // Chain all method calls, which modify the app in place
+    app.add_plugins(WrappedWebAssetPlugin)
         .add_plugins(NetworkingPlugin)
         .add_plugins(CameraPlugin)
+        .add_plugins(LightningPlugin)
         // .add_plugins(ObjectListPlugin)
         .add_plugins(RobotPlugin)
         .add_plugins(bevy_stl::StlPlugin)
-        .add_systems(Startup, setup)
-        .run();
-}
+        .add_systems(Startup, setup);
 
-#[wasm_bindgen]
-extern "C" {
-    // Use `js_namespace` here to bind `console.log(..)` instead of just
-    // `log(..)`
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-
-    // Multiple arguments too!
-    #[wasm_bindgen(js_namespace = console, js_name = log)]
-    fn log_many(a: &str, b: &str);
+    app
 }
 
 #[wasm_bindgen]
 pub fn start() {
-    log("Hello from Rust!");
-    define_app();
+    let mut app = define_app();
+    app.run();
 }
 
 fn main() {
-    define_app();
+    let mut app = define_app();
+    app.run();
 }
 
 #[derive(Component)]

@@ -1,0 +1,11 @@
+[package]
+name = "rob_camera"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+license.workspace = true
+
+[dependencies]
+bevy = {workspace = true}
+bevy_panorbit_camera = "0.19.1"
