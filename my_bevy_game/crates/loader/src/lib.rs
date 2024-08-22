@@ -1,11 +1,31 @@
+use bevy::asset::LoadState;
+use bevy::prelude::UntypedHandle;
 use bevy::prelude::*;
 
-pub struct AssetResolverPlugin;
+pub struct AssetPlugin;
 
-impl Plugin for AssetResolverPlugin {
+impl Plugin for AssetPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup);
+        app.init_resource::<AssetList>()
+            .add_systems(Update, check_asset_loading);
     }
 }
 
-fn setup(asset_server: Res<AssetServer>) {}
+#[derive(Default, Resource)]
+pub struct AssetList(pub Vec<UntypedHandle>);
+
+pub fn check_asset_loading(
+    asset_server: Res<AssetServer>,
+    asset_list: Res<AssetList>,
+    // mut next_state: ResMut<NextState<MainState>>,
+) {
+    match asset_server.get_load_state(asset_list.0.iter().map(|a| a.id())) {
+        Some(LoadState::Loaded) => {
+            next_state.set(MainState::Game);
+        }
+        LoadState::Failed => {
+            error!("asset loading error");
+        }
+        _ => {}
+    };
+}

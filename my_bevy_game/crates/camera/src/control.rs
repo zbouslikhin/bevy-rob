@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use std::f32::consts::*;
 
 use bevy::{
     ecs::{query::With, system::Query},
@@ -55,19 +54,5 @@ pub fn rotation(
         transform.rotate_around(Vec3::ZERO, Quat::from_rotation_y(delta));
     } else if input.pressed(KeyCode::ArrowRight) {
         transform.rotate_around(Vec3::ZERO, Quat::from_rotation_y(-delta));
-    }
-}
-
-pub fn animate_light_direction(
-    time: Res<Time>,
-    mut query: Query<&mut Transform, With<DirectionalLight>>,
-) {
-    for mut transform in &mut query {
-        transform.rotation = Quat::from_euler(
-            EulerRot::ZYX,
-            0.0,
-            time.elapsed_seconds() * PI / 5.0,
-            -FRAC_PI_4,
-        );
     }
 }

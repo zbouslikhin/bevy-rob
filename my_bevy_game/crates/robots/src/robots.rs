@@ -23,6 +23,30 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         scene: asset_server.load("http://localhost:3000/models/base.gltf#Scene0"),
         ..default()
     });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link1.gltf#Scene0"),
+        ..default()
+    });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link2.gltf#Scene0"),
+        ..default()
+    });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link3.gltf#Scene0"),
+        ..default()
+    });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link4.gltf#Scene0"),
+        ..default()
+    });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link5.gltf#Scene0"),
+        ..default()
+    });
+    commands.spawn(SceneBundle {
+        scene: asset_server.load("http://localhost:3000/models/link6.gltf#Scene0"),
+        ..default()
+    });
 }
 
 fn movement(
